@@ -1,7 +1,7 @@
 
 package com.kingmemo.photostudio
 
-import android.app.Activity
+import androidx.activity.ComponentActivity
 import android.os.Bundle
 import android.content.Intent
 import android.graphics.Bitmap
@@ -13,7 +13,7 @@ import android.graphics.Color
 import androidx.activity.result.contract.ActivityResultContracts
 import java.io.InputStream
 
-class MainActivity : Activity() {
+class MainActivity : ComponentActivity() {
 
     private lateinit var preview: ImageView
     private var selectedUri: Uri? = null
