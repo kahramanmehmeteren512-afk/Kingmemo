@@ -10,6 +10,9 @@ import android.graphics.Color
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import java.util.concurrent.Executors
+import android.content.ContentValues
+import android.os.Build
+import android.provider.MediaStore
 
 class MainActivity : ComponentActivity() {
 
@@ -102,6 +105,41 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        
+        val save = Button(this).apply {
+    text = "GALERİYE KAYDET"
+
+    setOnClickListener {
+        val bitmap = selectedBitmap
+
+        if (bitmap == null) {
+            Toast.makeText(this@MainActivity, "Önce fotoğraf seç", Toast.LENGTH_SHORT).show()
+            return@setOnClickListener
+        }
+
+        try {
+            val values = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, "KING_AI_${System.currentTimeMillis()}.png")
+                put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/KING PHOTO STUDIO")
+            }
+
+            val uri = contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                values
+            )
+
+            if (uri != null) {
+                contentResolver.openOutputStream(uri)?.use {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+                }
+                Toast.makeText(this@MainActivity, "Galeriye kaydedildi!", Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this@MainActivity, "Kayıt hatası: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+        }
 
         layout.addView(title)
         layout.addView(preview, LinearLayout.LayoutParams(
@@ -109,7 +147,7 @@ class MainActivity : ComponentActivity() {
         ))
         layout.addView(choose)
         layout.addView(remove)
-
+        layout.addView(save)
         setContentView(layout)
     }
 
